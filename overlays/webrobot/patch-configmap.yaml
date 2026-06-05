@@ -8,3 +8,5 @@ data:
   NEXT_PUBLIC_BACKEND_URL: "https://postiz.webrobot.eu/api"
   # REDIS_URL (host + password for the existing nuvolaris Redis) is set in the
   # gitignored secret.yaml — kept out of this published file.
+  # Signups locked (admin ceo@webrobot.eu already created).
+  DISABLE_REGISTRATION: "true"
