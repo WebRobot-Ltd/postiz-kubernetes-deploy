@@ -9,6 +9,10 @@ metadata:
     app: postiz
   annotations:
     traefik.ingress.kubernetes.io/ssl-redirect: "false"
+    # Aligned with www.webrobot.eu — longer timeouts for media uploads / long ops
+    traefik.ingress.kubernetes.io/transport.respondingTimeouts.idleTimeout: "600"
+    traefik.ingress.kubernetes.io/transport.respondingTimeouts.readTimeout: "600"
+    traefik.ingress.kubernetes.io/transport.respondingTimeouts.writeTimeout: "600"
 spec:
   ingressClassName: traefik
   rules:
