@@ -34,10 +34,12 @@ spec:
           resources:
             requests:
               cpu: "250m"
-              memory: "512Mi"
+              memory: "1Gi"
             limits:
-              cpu: "1"
-              memory: "2Gi"
+              cpu: "2"
+              # All-in-one (frontend build + backend + workers + Temporal workflow
+              # bundling) spikes RAM — 2Gi OOMKills (exit 137). 4Gi is comfortable.
+              memory: "4Gi"
           readinessProbe:
             httpGet:
               path: /
