@@ -1,19 +1,17 @@
-# OPTIONAL — enable by uncommenting in kustomization.yaml.
-# Skip if you expose postiz.webrobot.eu via Caddy (like the rest of the edge) instead
-# of a k8s Ingress controller. Adjust ingressClassName / TLS to the cluster's setup.
+# OPTIONAL, GENERIC example — enable by uncommenting in kustomization.yaml.
+# Set ingressClassName to your controller (traefik / nginx / …) and add a `tls:`
+# block only if your cluster terminates TLS at the ingress (e.g. via cert-manager).
+# A working Traefik example is in overlays/webrobot/ingress.yaml.
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: postiz
   labels:
     app: postiz
-  annotations:
-    # nginx example — change to your controller. Postiz uploads media → raise body size.
-    nginx.ingress.kubernetes.io/proxy-body-size: "100m"
 spec:
-  ingressClassName: nginx
+  ingressClassName: CHANGE-ME   # e.g. traefik or nginx
   rules:
-    - host: postiz.webrobot.eu
+    - host: postiz.example.com
       http:
         paths:
           - path: /
@@ -23,7 +21,3 @@ spec:
                 name: postiz
                 port:
                   number: 80
-  tls:
-    - hosts:
-        - postiz.webrobot.eu
-      secretName: postiz-tls

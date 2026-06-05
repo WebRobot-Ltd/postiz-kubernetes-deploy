@@ -9,7 +9,6 @@ metadata:
     app: postiz
   annotations:
     traefik.ingress.kubernetes.io/ssl-redirect: "false"
-    nginx.ingress.kubernetes.io/proxy-body-size: "1024m"
 spec:
   ingressClassName: traefik
   rules:
