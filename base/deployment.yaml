@@ -1,0 +1,58 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: postiz
+  labels:
+    app: postiz
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: postiz
+  template:
+    metadata:
+      labels:
+        app: postiz
+    spec:
+      containers:
+        - name: postiz
+          # All-in-one image (frontend + backend + workers + cron behind an internal
+          # proxy on port 5000). PIN to a released tag in production (e.g. :v1.x.x).
+          image: ghcr.io/gitroom/postiz-app:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 5000
+              name: http
+          envFrom:
+            - configMapRef:
+                name: postiz-config
+            - secretRef:
+                name: postiz-secrets   # provides JWT_SECRET, DATABASE_URL (+ OAuth keys)
+          volumeMounts:
+            - name: uploads
+              mountPath: /uploads
+          resources:
+            requests:
+              cpu: "250m"
+              memory: "512Mi"
+            limits:
+              cpu: "1"
+              memory: "2Gi"
+          readinessProbe:
+            httpGet:
+              path: /
+              port: http
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            timeoutSeconds: 5
+          livenessProbe:
+            httpGet:
+              path: /
+              port: http
+            initialDelaySeconds: 90
+            periodSeconds: 20
+            timeoutSeconds: 5
+      volumes:
+        - name: uploads
+          persistentVolumeClaim:
+            claimName: postiz-uploads

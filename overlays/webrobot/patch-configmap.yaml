@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: postiz-config
+data:
+  MAIN_URL: "https://postiz.webrobot.eu"
+  FRONTEND_URL: "https://postiz.webrobot.eu"
+  NEXT_PUBLIC_BACKEND_URL: "https://postiz.webrobot.eu/api"
+  # Cluster Redis (same instance n8n uses; no password)
+  REDIS_URL: "redis://redis-master.redis.svc.cluster.local:6379"

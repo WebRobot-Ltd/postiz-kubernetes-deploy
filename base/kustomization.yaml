@@ -1,0 +1,16 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+# Postiz — open-source multi-channel social posting (self-hosted).
+# GENERIC, SECRET-FREE base — safe to publish. Official image, no build needed.
+#
+# This base does NOT include a Secret: create your own `postiz-secrets`
+# (copy secret.example.yaml → secret.yaml, fill it, keep it out of git) or layer
+# an overlay (see ../overlays/webrobot for how WebRobot wires it). Then:
+#   kubectl apply -k <your overlay>
+resources:
+  - configmap.yaml
+  - pvc.yaml
+  - deployment.yaml
+  - service.yaml
+  # - ingress.yaml   # optional — enable if exposing via a k8s Ingress controller

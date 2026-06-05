@@ -1,0 +1,28 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: postiz-config
+data:
+  # Public URLs — OVERRIDE per environment (set your real host via an overlay).
+  MAIN_URL: "https://postiz.example.com"
+  FRONTEND_URL: "https://postiz.example.com"
+  NEXT_PUBLIC_BACKEND_URL: "https://postiz.example.com/api"
+  # Internal backend address inside the all-in-one container
+  BACKEND_INTERNAL_URL: "http://localhost:3000"
+
+  # External Redis — point at your Redis service (override per environment).
+  REDIS_URL: "redis://redis:6379"
+
+  # Local file storage for uploads (backed by the PVC mounted at /uploads)
+  STORAGE_PROVIDER: "local"
+  UPLOAD_DIRECTORY: "/uploads"
+  NEXT_PUBLIC_UPLOAD_DIRECTORY: "/uploads"
+
+  # General self-hosted mode
+  IS_GENERAL: "true"
+  # Set to "true" after creating the first admin user to lock signups
+  DISABLE_REGISTRATION: "false"
+
+  # Per-channel OAuth app credentials go in the Secret (X_*, LINKEDIN_*, FACEBOOK_*, …)
+  # — add them there as each platform app is approved. The layer cannot post to a
+  # channel without that platform's approved app + OAuth tokens.

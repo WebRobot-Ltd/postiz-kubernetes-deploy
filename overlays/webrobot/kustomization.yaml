@@ -1,0 +1,18 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+# WebRobot deployment overlay — published for TRANSPARENCY on our setup.
+# Runs Postiz in the `nuvolaris` namespace, reuses the existing admin Postgres
+# secret + the cluster Redis, and sets our public host. The real JWT secret
+# (secret.yaml) is gitignored — copy ../../base/secret.example.yaml to create it.
+#
+# Deploy:  kubectl apply -k infra/postiz/overlays/webrobot
+namespace: nuvolaris
+
+resources:
+  - ../../base
+  - secret.yaml          # postiz-secrets: JWT_SECRET (+ OAuth keys). gitignored.
+
+patches:
+  - path: patch-deployment.yaml   # DB admin password from postgres-nuvolaris-secret
+  - path: patch-configmap.yaml    # our public host + cluster Redis

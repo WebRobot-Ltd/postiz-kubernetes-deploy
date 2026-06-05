@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: postiz
+spec:
+  template:
+    spec:
+      containers:
+        - name: postiz
+          env:
+            # Postgres ADMIN password pulled from the EXISTING nuvolaris secret —
+            # no password copied into our own secret. Works because this overlay
+            # runs in the `nuvolaris` namespace where that secret lives.
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-nuvolaris-secret
+                  key: superUserPassword
+            # k8s expands $(DB_PASSWORD) from the env var above.
+            # TODO adapt: confirm the Postgres service DNS + use a dedicated `postiz`
+            # database (do NOT reuse webrobotdb). Pod is nuvolaris-postgres-1-0.
+            - name: DATABASE_URL
+              value: "postgresql://postgres:$(DB_PASSWORD)@nuvolaris-postgres.nuvolaris.svc.cluster.local:5432/postiz"
