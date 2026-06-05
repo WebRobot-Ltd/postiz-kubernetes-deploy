@@ -1,0 +1,63 @@
+# Temporal server (required by recent Postiz for scheduling). Uses temporalio/auto-setup
+# — the same image Postiz's own docker-compose uses — which creates its schema on the
+# given Postgres on first boot. Point POSTGRES_SEEDS/USER/PWD at your Postgres via an
+# overlay. Single-node quickstart topology (fine for backing one Postiz).
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: temporal
+  labels:
+    app: temporal
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: temporal
+  template:
+    metadata:
+      labels:
+        app: temporal
+    spec:
+      containers:
+        - name: temporal
+          image: temporalio/auto-setup:1.25.2
+          ports:
+            - containerPort: 7233
+              name: grpc
+          env:
+            - { name: DB, value: "postgres12" }
+            - { name: DB_PORT, value: "5432" }
+            - { name: DBNAME, value: "temporal" }
+            - { name: VISIBILITY_DBNAME, value: "temporal_visibility" }
+            - { name: ENABLE_ES, value: "false" }
+            - { name: SKIP_ADD_CUSTOM_SEARCH_ATTRIBUTES, value: "true" }
+            # Override these per environment (see overlay):
+            - { name: POSTGRES_SEEDS, value: "postgres" }
+            - { name: POSTGRES_USER, value: "postgres" }
+            - name: POSTGRES_PWD
+              valueFrom:
+                secretKeyRef:
+                  name: temporal-secrets   # overridden by the overlay to the cluster's DB secret
+                  key: POSTGRES_PWD
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "256Mi"
+            limits:
+              cpu: "1"
+              memory: "1Gi"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: temporal
+  labels:
+    app: temporal
+spec:
+  type: ClusterIP
+  selector:
+    app: temporal
+  ports:
+    - name: grpc
+      port: 7233
+      targetPort: 7233

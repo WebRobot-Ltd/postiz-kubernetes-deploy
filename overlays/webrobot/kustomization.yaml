@@ -12,7 +12,9 @@ namespace: nuvolaris
 resources:
   - ../../base
   - secret.yaml          # postiz-secrets: JWT_SECRET (+ OAuth keys). gitignored.
+  - ingress.yaml         # Traefik ingress → postiz.webrobot.eu
 
 patches:
   - path: patch-deployment.yaml   # DB admin password from postgres-nuvolaris-secret
   - path: patch-configmap.yaml    # our public host + cluster Redis
+  - path: patch-temporal.yaml     # Temporal → nuvolaris Postgres (admin secret)

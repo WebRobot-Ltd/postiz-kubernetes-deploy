@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: temporal
+spec:
+  template:
+    spec:
+      containers:
+        - name: temporal
+          env:
+            # Point Temporal at the nuvolaris Postgres; password from the existing
+            # admin secret (overrides the base's temporal-secrets ref). User `postgres`
+            # has rights to create the temporal / temporal_visibility databases.
+            - name: POSTGRES_SEEDS
+              value: "nuvolaris-postgres.nuvolaris.svc.cluster.local"
+            - name: POSTGRES_PWD
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-nuvolaris-secret
+                  key: superUserPassword

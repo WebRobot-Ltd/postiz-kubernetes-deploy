@@ -18,7 +18,7 @@ spec:
         - name: postiz
           # All-in-one image (frontend + backend + workers + cron behind an internal
           # proxy on port 5000). PIN to a released tag in production (e.g. :v1.x.x).
-          image: ghcr.io/gitroom/postiz-app:latest
+          image: ghcr.io/gitroomhq/postiz-app:latest
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 5000

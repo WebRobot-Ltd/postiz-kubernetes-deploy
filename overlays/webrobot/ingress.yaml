@@ -1,0 +1,25 @@
+# Traefik ingress for postiz.webrobot.eu (mirrors the other *.webrobot.eu ingresses:
+# Traefik class, port 80, no in-ingress TLS block — TLS is terminated at the edge;
+# the cluster has no cert-manager ClusterIssuer). Postiz uploads media → large body.
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: postiz
+  labels:
+    app: postiz
+  annotations:
+    traefik.ingress.kubernetes.io/ssl-redirect: "false"
+    nginx.ingress.kubernetes.io/proxy-body-size: "1024m"
+spec:
+  ingressClassName: traefik
+  rules:
+    - host: postiz.webrobot.eu
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: postiz
+                port:
+                  number: 80

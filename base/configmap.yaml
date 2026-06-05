@@ -10,8 +10,12 @@ data:
   # Internal backend address inside the all-in-one container
   BACKEND_INTERNAL_URL: "http://localhost:3000"
 
-  # External Redis — point at your Redis service (override per environment).
+  # External Redis — point at your existing Redis service (override per environment).
   REDIS_URL: "redis://redis:6379"
+
+  # Temporal server (deployed by temporal.yaml in this base)
+  TEMPORAL_ADDRESS: "temporal:7233"
+  TEMPORAL_NAMESPACE: "default"
 
   # Local file storage for uploads (backed by the PVC mounted at /uploads)
   STORAGE_PROVIDER: "local"

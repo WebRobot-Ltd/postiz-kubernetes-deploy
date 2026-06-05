@@ -2,10 +2,10 @@
 
 # 🚀 Postiz on Kubernetes
 
-### Production-ready Kustomize manifests to self-host [Postiz](https://github.com/gitroom/postiz-app) — open-source multi-channel social scheduling — on any K8s cluster.
+### Production-ready Kustomize manifests to self-host [Postiz](https://github.com/gitroomhq/postiz-app) — open-source multi-channel social scheduling — on any K8s cluster.
 
 [![License: MIT](https://img.shields.io/badge/manifests-MIT-green)](LICENSE)
-[![Postiz](https://img.shields.io/badge/Postiz-AGPL--3.0-blue)](https://github.com/gitroom/postiz-app)
+[![Postiz](https://img.shields.io/badge/Postiz-AGPL--3.0-blue)](https://github.com/gitroomhq/postiz-app)
 [![Kustomize](https://img.shields.io/badge/Kustomize-base%20%2B%20overlays-326ce5)](https://kustomize.io)
 
 </div>
@@ -48,10 +48,13 @@ kubectl apply -k infra/postiz/base
 #    (DATABASE_URL is injected by patch-deployment.yaml from postgres-nuvolaris-secret)
 # 3. Apply (runs in the nuvolaris namespace):
 kubectl apply -k infra/postiz/overlays/webrobot
-# 4. Expose postiz.webrobot.eu via Caddy (like the rest of the edge) or base/ingress.yaml.
+# 4. Expose postiz.webrobot.eu — a Traefik ingress is included (overlays/webrobot/ingress.yaml).
 ```
-Reuses the same **Redis** as n8n (`redis-master.redis.svc.cluster.local`) and the
-**nuvolaris Postgres** admin secret — no password copied (secretKeyRef + `$(VAR)`).
+Uses the existing **nuvolaris Redis** (`redis.nuvolaris.svc.cluster.local`, password
+from its `redis-cm`, set inside the gitignored secret) and the **nuvolaris Postgres**
+admin secret — no password copied for Postgres (secretKeyRef + `$(VAR)`). A **Temporal**
+server (`temporalio/auto-setup`, base/temporal.yaml) is deployed too — recent Postiz
+requires it for scheduling; it provisions its schema on the same Postgres on first boot.
 
 ## After first boot
 - Create the first admin user, then set `DISABLE_REGISTRATION: "true"`.

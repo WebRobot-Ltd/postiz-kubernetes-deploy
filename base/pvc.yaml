@@ -8,4 +8,5 @@ spec:
   resources:
     requests:
       storage: 10Gi
-  storageClassName: longhorn
+  # No storageClassName → uses the cluster's default StorageClass (most portable).
+  # Pin one per environment via an overlay patch if you need a specific class.
